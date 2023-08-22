@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    restart: always
+    container_name: db_fruktorum
+    ports:
+      - "5432:5432"
+    image: postgres:16beta3
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+  web:
+    build: .
+    command: ["./entrypoint.sh"]
+    volumes:
+      - .:/app
+    ports:
+      - "8808:8808"
+    depends_on:
+      - db
+    environment:
+      DEBUG: 'True'
+      DB_HOST: db
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
